@@ -38,59 +38,52 @@ function play_game(game_data) {
 	Module.setStatus('');
 }
 
-function downloadBlobWithProgress(url, cb_progress, cb_done, cb_error) {
-	let oReq = new XMLHttpRequest();
-	oReq.open('GET', url, true);
-	oReq.responseType = 'blob';
+function fetchBlobWithProgress(url, cb_progress) {
+	return new Promise((resolve, reject) => {
+		let oReq = new XMLHttpRequest();
+		oReq.open('GET', url, true);
+		oReq.responseType = 'blob';
 
-	oReq.addEventListener("progress", function(event) {
-		if (event.lengthComputable) {
-			let percent_complete = event.loaded / event.total;
-			cb_progress(percent_complete);
-		}
-	}, false);
-	oReq.addEventListener("load", function(event) {
-		if (this.status === 200) {
-			let blob = new Blob([this.response]);
-			cb_done(blob);
-		} else {
-			cb_error(this.status);
-		}
-	}, false);
-	oReq.addEventListener("error", function(event) {
-		console.warn(event);
-	}, false);
-	oReq.addEventListener("abort", function(event) {
-		console.warn(event);
-	}, false);
+		oReq.addEventListener("progress", function(event) {
+			if (event.lengthComputable) {
+				let percent_complete = event.loaded / event.total;
+				cb_progress(percent_complete);
+			}
+		}, false);
+		oReq.addEventListener("load", function(event) {
+			if (this.status >= 200 && this.status < 400) {
+				let blob = new Blob([this.response]);
+				resolve(blob);
+			} else {
+				reject(this.status);
+			}
+		}, false);
+		oReq.addEventListener("error", function(event) {
+			reject(event)
+		}, false);
+		oReq.addEventListener("abort", function(event) {
+			reject(event)
+		}, false);
 
-	oReq.timeout = 30000;
-	oReq.send();
+		oReq.timeout = 30000;
+		oReq.send();
+	})
 }
 
-function downloadAndLoadScript(url, mime_type, cb) {
-	downloadBlobWithProgress(url,
-		function(percent_complete) {
-			//console.log(percent_complete);
+function fetchAndLoadScript(url, mime_type) {
+	return fetchBlobWithProgress(url, (percent_complete) => {
 			progressElement.value = percent_complete * 100;
-		},
-		function(blob) {
-			//console.log(blob);
+	})
+		.then(blob => {
 			let obj_url = URL.createObjectURL(blob);
 			let script = document.createElement('script');
 			script.type = mime_type;
-			script.onload = function() {
-				//URL.revokeObjectURL(obj_url);
-				//console.log('Revoking url: ' + url + ',  ' + obj_url);
-			};
 			script.setAttribute('src', obj_url);
 			document.head.appendChild(script);
-			cb();
-		},
-		function(status) {
-			console.warn(status);
-		}
-	);
+		})
+		.catch(error => {
+			console.warn(error);
+		})
 }
 
 function fetchOctetStream(fileName) {
@@ -283,16 +276,13 @@ let main = (function() {
 	}, false);
 
 	// Load the large files and show progress
-	documentOnReady(() => {
-		downloadAndLoadScript("SaltyNES.wasm", "application/octet-binary", function() {
-			downloadAndLoadScript("SaltyNES.js", "text/javascript", function() {
-				if (navigator.userAgent.includes('windows')) {
-					Module.set_is_windows();
-				}
-			});
-		});
-	});
-
+	documentOnReady()
+		.then(() => fetchAndLoadScript("SaltyNES.js", "text/javascript")) // this already invoque the wasm file
+		.then(() => {
+			if (navigator.userAgent.includes('windows')) {
+				Module.set_is_windows();
+			}
+		})
 });
 
 if (! ('WebAssembly' in window)) {

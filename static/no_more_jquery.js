@@ -48,12 +48,11 @@ function is_hidden(selector) {
 	return false;
 }
 
-function documentOnReady(cb) {
+function documentOnReady() {
 	if (document.readyState !== 'loading') {
-		cb();
-	} else {
-		document.addEventListener('DOMContentLoaded', cb);
+		return Promise.resolve();
 	}
+	return new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve))
 }
 
 function httpGet(url, cb, timeout) {
