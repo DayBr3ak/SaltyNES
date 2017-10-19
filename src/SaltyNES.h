@@ -654,8 +654,8 @@ public:
 	size_t getMemSize();
 	void write(size_t address, uint16_t value);
 	uint16_t load(size_t address);
-	void dump(string file);
-	void dump(string file, size_t offset, size_t length);
+	void dump(string& file);
+	void dump(string& file, size_t offset, size_t length);
 	void write(size_t address, array<uint16_t, 16384>* array, size_t length);
 	void write(size_t address, array<uint16_t, 16384>* array, size_t arrayoffset, size_t length);
 };
@@ -874,7 +874,7 @@ public:
 	static string bin8(int num);
 	static string bin16(int num);
 	static string binStr(uint32_t value, int bitcount);
-	static string pad(string str, string padStr, int length);
+	static string pad(string str, string& padStr, int length);
 	static float random();
 	static string from_vector_to_hex_string(array<uint16_t, 0x2000>* data);
 	static vector<uint16_t>* from_hex_string_to_vector(string data);

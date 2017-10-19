@@ -46,11 +46,11 @@ uint16_t Memory::load(size_t address) {
 	return mem[address];
 }
 
-void Memory::dump(string file) {
+void Memory::dump(string& file) {
 	dump(file, 0, mem.size());
 }
 
-void Memory::dump(string file, size_t offset, size_t length) {
+void Memory::dump(string& file, size_t offset, size_t length) {
 	auto ch = vector<char>(length);
 	for(size_t i=0; i<ch.size(); ++i) {
 		ch[i] = static_cast<char>(mem[offset + i]);

@@ -107,11 +107,9 @@ void NES::dumpCPUMemory(ofstream* writer) {
 }
 
 bool NES::stateLoad(ByteBuffer* buf) {
-	bool continueEmulation = false;
 	bool success;
 
 	// Pause emulation:
-	continueEmulation = true;
 	stopEmulation();
 
 	// Check version:
@@ -129,15 +127,12 @@ bool NES::stateLoad(ByteBuffer* buf) {
 	} else {
 
 		//System.out.println("State file has wrong format. version="+buf->readByte(0));
+		printf("%s\n", "State file has wrong format.");
 		success = false;
-
 	}
 
 	// Continue emulation:
-	if(continueEmulation) {
-		startEmulation();
-	}
-
+	startEmulation();
 	return success;
 }
 

@@ -64,7 +64,7 @@ string Misc::binStr(uint32_t value, int bitcount) {
 	return ret;
 }
 
-string Misc::pad(string str, string padStr, int length) {
+string Misc::pad(string str, string& padStr, int length) {
 	while(static_cast<int>(str.length()) < length) {
 		str += padStr;
 	}
