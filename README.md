@@ -18,7 +18,7 @@ python3 -m http.server 9999
 ```
 
 TODO
-* Remove the mutex, or replace it with std::mutex
+* ~~Remove the mutex, or replace it with std::mutex~~
 * see if smb3 and punchout work in vnes
 * save memory to localstorage/indexeddb
 * tetris has no backgrounds

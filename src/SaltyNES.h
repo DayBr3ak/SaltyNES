@@ -15,7 +15,6 @@ Hosted at: https://github.com/workhorsy/SaltyNES
 #include <sstream>
 #include <iomanip>
 #include <fstream>
-#include <pthread.h>
 #include <string>
 #include <algorithm>
 #include <memory>
@@ -987,7 +986,6 @@ public:
 	static const uint16_t dmcFreqLookup[];
 	static const uint16_t noiseWavelengthLookup[];
 
-	mutable pthread_mutex_t _mutex;
 	bool _is_muted;
 	bool _is_running;
 	shared_ptr<NES> nes;
@@ -1062,8 +1060,6 @@ public:
 
 	int bufferIndex;
 
-	void lock_mutex();
-	void unlock_mutex();
 	explicit PAPU();
 	shared_ptr<PAPU> Init(shared_ptr<NES> nes);
 	~PAPU();

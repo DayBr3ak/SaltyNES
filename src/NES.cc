@@ -169,9 +169,7 @@ bool NES::isRunning() {
 
 void NES::startEmulation() {
 	if(Globals::enableSound && !papu->isRunning()) {
-		papu->lock_mutex();
 		papu->synchronized_start();
-		papu->unlock_mutex();
 	}
 	{
 		if(rom != nullptr && rom->isValid()) {
@@ -313,9 +311,7 @@ void NES::enableSound(bool enable) {
 	}
 
 	if(enable) {
-		papu->lock_mutex();
 		papu->synchronized_start();
-		papu->unlock_mutex();
 	} else {
 		papu->stop();
 	}
@@ -332,8 +328,6 @@ void NES::setFramerate(int rate) {
 	Globals::preferredFrameRate = rate;
 	Globals::frameTime = 1000000 / rate;
 
-	papu->lock_mutex();
 	papu->synchronized_setSampleRate(papu->getSampleRate(), false);
-	papu->unlock_mutex();
 }
 */

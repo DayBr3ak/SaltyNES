@@ -94,21 +94,11 @@ const uint16_t PAPU::noiseWavelengthLookup[] = {
 	0xFE4
 };
 
-void PAPU::lock_mutex() {
-	pthread_mutex_lock(&_mutex);
-}
-
-void PAPU::unlock_mutex() {
-	pthread_mutex_unlock(&_mutex);
-}
-
 PAPU::PAPU() : enable_shared_from_this<PAPU>() {
-	
+
 }
 
 shared_ptr<PAPU> PAPU::Init(shared_ptr<NES> nes) {
-	pthread_mutex_init(&_mutex, nullptr);
-
 	_is_muted = false;
 	_is_running = false;
 
@@ -177,9 +167,7 @@ shared_ptr<PAPU> PAPU::Init(shared_ptr<NES> nes) {
 	tnd_table.fill(0);
 	ready_for_buffer_write = false;
 
-	lock_mutex();
 	synchronized_setSampleRate(sampleRate, false);
-	unlock_mutex();
 
 	sampleBuffer = vector<uint8_t>(bufferSize * (stereo ? 4 : 2), 0);
 	ismpbuffer = vector<int>(bufferSize * (stereo ? 2 : 1), 0);
@@ -227,8 +215,6 @@ shared_ptr<PAPU> PAPU::Init(shared_ptr<NES> nes) {
 PAPU::~PAPU() {
 	nes = nullptr;
 	cpuMem = nullptr;
-
-	pthread_mutex_destroy(&_mutex);
 }
 
 void PAPU::stateLoad(ByteBuffer* buf) {
@@ -786,9 +772,7 @@ int PAPU::getSampleRate() {
 }
 
 void PAPU::reset() {
-	lock_mutex();
 	synchronized_setSampleRate(sampleRate, false);
-	unlock_mutex();
 
 	updateChannelEnable(0);
 	masterFrameCounter = 0;
@@ -869,9 +853,7 @@ void PAPU::synchronized_setSampleRate(int rate, bool restart) {
 	if(restart) {
 		stop();
 
-		lock_mutex();
 		synchronized_start();
-		unlock_mutex();
 	}
 
 	if(cpuRunning) {
@@ -898,9 +880,7 @@ void PAPU::synchronized_setStereo(bool s, bool restart) {
 	if(restart) {
 		stop();
 
-		lock_mutex();
 		synchronized_start();
-		unlock_mutex();
 	}
 
 	if(running) {
