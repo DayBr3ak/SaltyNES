@@ -9,8 +9,8 @@ file(GLOB SOURCES "src/*.cc")
 message(STATUS "system name: " ${CMAKE_SYSTEM_NAME} ", build: " ${CMAKE_BUILD_TYPE})
 
 if ({CMAKE_BUILD_TYPE} MATCHES "Debug")
-	set(MORE_FLAGS_NATIVE="-g")
-	set(MORE_FLAGS_WEB="-s SAFE_HEAP=1") # add addition debug emscripten flags ?
+	set(MORE_FLAGS_NATIVE="-g -DDEBUG")
+	set(MORE_FLAGS_WEB="-s SAFE_HEAP=1 -DDEBUG") # add addition debug emscripten flags ?
 endif ()
 
 if ({CMAKE_BUILD_TYPE} MATCHES "Release")

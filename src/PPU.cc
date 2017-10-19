@@ -434,6 +434,7 @@ void PPU::startVBlank() {
 #endif
 	}
 
+#ifdef DEBUG
 	// Print the frame rate
 	_ticks_since_second += diff + wait;
 	if(_ticks_since_second >= 1000000.0) {
@@ -442,7 +443,7 @@ void PPU::startVBlank() {
 		frameCounter = 0;
 	}
 	++frameCounter;
-
+#endif
 	// Get the start time of the next frame
 	gettimeofday(&_frame_start, nullptr);
 }
