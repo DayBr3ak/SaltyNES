@@ -438,7 +438,7 @@ void PPU::startVBlank() {
 	// Print the frame rate
 	_ticks_since_second += diff + wait;
 	if(_ticks_since_second >= 1000000.0) {
-		printf("FPS: %d\n", frameCounter);
+		printf("FPS: %u\n", frameCounter);
 		_ticks_since_second = 0;
 		frameCounter = 0;
 	}
@@ -580,18 +580,22 @@ void PPU::startFrame() {
 			case 1: {
 				// Green
 				bgColor = 0x00FF00;
+				break;
 			}
 			case 2: {
 				// Blue
 				bgColor = 0xFF0000;
+				break;
 			}
 			case 3: {
 				// Invalid. Use black.
 				bgColor = 0x000000;
+				break;
 			}
 			case 4: {
 				// Red
 				bgColor = 0x0000FF;
+				break;
 			}
 			default: {
 				// Invalid. Use black.
