@@ -1,4 +1,7 @@
 
+# Stop and exit on error
+set -e
+
 git submodule init
 git submodule update
 
